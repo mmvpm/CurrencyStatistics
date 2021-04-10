@@ -7,6 +7,9 @@ lazy val root = project.in(file("."))
         Compile / run / mainClass := Some("ru.ideaseeker.currency.Main")
     )
     .settings( // dependencies
+        libraryDependencies += "org.apache.poi" % "poi" % "5.0.0",
+        libraryDependencies += "org.apache.poi" % "poi-ooxml" % "5.0.0",
+        libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.4.2",
         libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.7" % "test"
     )
     .settings( // sbt-assembly
