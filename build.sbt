@@ -1,5 +1,5 @@
-version in Global := "0.1"
-scalaVersion in Global := "2.13.5"
+Global / version := "0.1"
+Global / scalaVersion  := "2.13.5"
 
 lazy val root = project.in(file("."))
     .settings(
