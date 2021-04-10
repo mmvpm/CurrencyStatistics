@@ -9,3 +9,8 @@ lazy val root = project.in(file("."))
     .settings( // dependencies
         libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.7" % "test"
     )
+    .settings( // sbt-assembly
+        assembly / assemblyJarName  := "CurrencyStatistics.jar",
+        assembly / test := {},
+        assembly / mainClass := Some("ru.ideaseeker.currency.Main")
+    )
