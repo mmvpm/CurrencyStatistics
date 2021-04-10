@@ -22,3 +22,6 @@ lazy val root = project.in(file("."))
         semanticdbVersion := scalafixSemanticdb.revision,
         scalacOptions += "-Ywarn-unused"
     )
+    .settings( // sbt-updates
+        dependencyUpdatesFailBuild := true
+    )
