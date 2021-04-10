@@ -30,9 +30,8 @@ class CbrExcelDownloader extends FileDownloader {
             "USD" -> "R01235",
             "EUR" -> "R01239",
         )
-        nameToCode.get(currencyName) match {
-            case Some(value) => currencyCode = value
-        }
+
+        currencyCode = nameToCode(currencyName)
         this
     }
 

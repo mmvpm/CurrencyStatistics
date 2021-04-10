@@ -1,11 +1,8 @@
 package ru.ideaseeker.currency.storage
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.io.ByteArrayInputStream
 import scala.collection.parallel.mutable.ParArray
 import org.apache.poi.xssf.usermodel.{XSSFSheet, XSSFWorkbook}
-
 
 class CbrExcelSheet(val sourceArray: Array[Byte]) {
 
