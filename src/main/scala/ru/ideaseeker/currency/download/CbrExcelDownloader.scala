@@ -5,6 +5,18 @@ import java.time.format.DateTimeFormatter
 
 class CbrExcelDownloader extends FileDownloader {
 
+    private var currencyCode: String = "R01239"
+
+    def setCurrency(currencyName: String): CbrExcelDownloader = {
+        val nameToCode = Map(
+            "USD" -> "R01235",
+            "EUR" -> "R01239",
+        )
+
+        currencyCode = nameToCode(currencyName)
+        this
+    }
+
     // default values
     private var fromDate: String = "01%2F01%2F2021"
     private var   toDate: String = "01%2F01%2F2021"
@@ -20,18 +32,6 @@ class CbrExcelDownloader extends FileDownloader {
 
     def setToDate(date: LocalDate): CbrExcelDownloader = {
         toDate = date.format(cbrFormatter)
-        this
-    }
-
-    private var currencyCode: String = "R01239"
-
-    def setCurrency(currencyName: String): CbrExcelDownloader = {
-        val nameToCode = Map(
-            "USD" -> "R01235",
-            "EUR" -> "R01239",
-        )
-
-        currencyCode = nameToCode(currencyName)
         this
     }
 

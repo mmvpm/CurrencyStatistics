@@ -4,13 +4,20 @@ import java.io.ByteArrayInputStream
 import scala.collection.parallel.mutable.ParArray
 import org.apache.poi.xssf.usermodel.{XSSFSheet, XSSFWorkbook}
 
-class CbrExcelSheet(val sourceArray: Array[Byte]) {
+class CbrExcelSheet(sourceArray: Array[Byte]) {
 
     private val sheet: XSSFSheet = new XSSFWorkbook(
         new ByteArrayInputStream(sourceArray)
     ).getSheetAt(0)
 
-    // expected table structure
+    /* expected table structure:
+    *
+    * | nominal | data      | curs    | cdx       |
+    * |---------|-----------|---------|-----------|
+    * | 1       | 4/10/2021 | 77.1657 | US Dollar |
+    * | 1       | 4/9/2021  | 77.1011 | US Dollar |
+    * ...
+    */
     private val index = Map(
         "nominal" -> 0,
         "date"    -> 1,
@@ -26,6 +33,7 @@ class CbrExcelSheet(val sourceArray: Array[Byte]) {
         }.reverse.toArray
     )
 
+    // get cell from excel sheet
     private def getOrDefault(i: Int, j: Int, default: String = "-1"): String = {
         if (i < height && j < sheet.getRow(i).getLastCellNum) {
             sheet.getRow(i).getCell(j).toString
@@ -52,6 +60,8 @@ class CbrExcelSheet(val sourceArray: Array[Byte]) {
         val lastDate = getOrDefault(height - 1, index("date"))
         (firstDate, lastDate)
     }
+
+    def getValues: List[Double] = values.toList
 
     def getMin: Option[Double] = {
         if (isEmpty) {
