@@ -1,0 +1,7 @@
+# JVM & Scala
+target/
+*.class
+.bsp
+.idea
+
+*.dvi
