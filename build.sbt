@@ -14,3 +14,8 @@ lazy val root = project.in(file("."))
         assembly / test := {},
         assembly / mainClass := Some("ru.ideaseeker.currency.Main")
     )
+    .settings( // scalafix
+        semanticdbEnabled := true,
+        semanticdbVersion := scalafixSemanticdb.revision,
+        scalacOptions += "-Ywarn-unused"
+    )
