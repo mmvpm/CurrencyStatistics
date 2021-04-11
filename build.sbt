@@ -10,7 +10,7 @@ lazy val root = project.in(file("."))
         libraryDependencies += "org.apache.poi" % "poi" % "5.0.0",
         libraryDependencies += "org.apache.poi" % "poi-ooxml" % "5.0.0",
         libraryDependencies += "org.scalaj" %% "scalaj-http" % "2.4.2",
-        libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.2.0",
+        libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.3.0",
         libraryDependencies += "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.2",
         libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.7" % "test"
     )

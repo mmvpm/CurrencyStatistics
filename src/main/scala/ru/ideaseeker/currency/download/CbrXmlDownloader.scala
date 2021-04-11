@@ -1,6 +1,6 @@
 package ru.ideaseeker.currency.download
 
-class CbrXmlDownloader extends FileDownloader {
+object CbrXmlDownloader extends FileDownloader {
 
     override def url: String = "https://www.cbr.ru/scripts/XML_valFull.asp"
 }
