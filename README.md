@@ -32,6 +32,6 @@
 - Парсинг `.xml` файла с информацией о валютах - [`scala-xml`](https://github.com/scala/scala-xml)
 - Тестирование логики - [`scalatest`](https://github.com/scalatest/scalatest)
 
-## Другое
+## GitHub Actions
 
 При каждом push/pull request запускаются тесты, минимальная проверка кода ([`scalafix`](https://github.com/scalacenter/scalafix)) и проверка установленных версий библиотек ([`sbt-updates`](https://github.com/rtimush/sbt-updates))
