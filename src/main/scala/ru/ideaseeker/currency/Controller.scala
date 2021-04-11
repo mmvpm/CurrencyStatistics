@@ -2,94 +2,87 @@ package ru.ideaseeker.currency
 
 import ru.ideaseeker.currency.storage.SheetStorage
 
+import scala.util.Failure
 import scala.io.StdIn.readLine
 
 object Controller {
 
     private val storage: SheetStorage = new SheetStorage
 
-    def readQuery(): Unit = {
-        val successResponse = Some("Success")
-        val defaultResponse = Some("I don't understand the query")
-        val emptyTableResponse = Some("Sheet is empty! Maybe you have a mistake in query")
+    sealed trait ControllerResponse {
+        val message: String
+    }
 
-        val command = readLine.split(' ')
+    case class Success(message: String = "Success") extends ControllerResponse
+    case class Default(message: String = "Invalid query") extends ControllerResponse
+    case class EmptySheet(message: String = "Sheet is empty or doesn't exist") extends ControllerResponse
+    case class Error(message: String = "Unknown error") extends ControllerResponse
+    case class Exit(message: String = "") extends ControllerResponse
+    case class SomeData(message: String) extends ControllerResponse
 
-        if (command.length < 1) {
-            println(defaultResponse.get)
-        }
-
-        val result = command(0) match {
-            // load <sheetName> <currencyName> <dd.MM.yyyy> <dd.MM.yyyy>
-            case "load" =>
-                if (command.length < 5) {
-                    defaultResponse
-                } else {
-                    storage.load(command(1), command(2), command(3), command(4))
-                    successResponse
+    private def readQuery(): ControllerResponse = {
+        readLine.split(' ') match {
+            case Array("load", sheetName, currencyName, fromDate, toDate) =>
+                storage.load(sheetName, currencyName, fromDate, toDate) match {
+                    case Failure(error) => Error(error.toString)
+                    case util.Success(_) => Success()
                 }
-            // delete <sheetName>/all
-            case "delete" =>
-                if (command.length < 2) {
-                    defaultResponse
-                } else {
-                    command(1) match {
-                        case "all" => storage.deleteAll()
-                        case name => storage.delete(name)
-                    }
-                    successResponse
+            case Array("delete", sheetName) =>
+                storage.delete(sheetName)
+                Success()
+            case Array("delete", "all") =>
+                storage.deleteAll()
+                Success()
+            case Array("sheets") =>
+                SomeData(storage.getSheets.mkString("[", ", ", "]"))
+            case Array("exit") =>
+                Exit()
+            case Array("show", sheetName) =>
+                storage.show(sheetName) match {
+                    case Some(list) => SomeData(list.mkString("[", ", ", "]"))
+                    case None => EmptySheet()
                 }
-            // get downloaded sheets
-            case "sheets" =>
-                Some(storage.getSheets.mkString(", "))
-            // exit from program
-            case "exit" =>
-                None
-            // show <sheetName>
-            case "show" =>
-                if (command.length < 2) {
-                    defaultResponse
-                } else {
-                    Some(storage.show(command(1)).mkString(", "))
+            case Array("min", sheetName) =>
+                storage.getMin(sheetName) match {
+                    case Some(value) => SomeData(s"min = $value")
+                    case None => Error("Sheet is empty or doesn't exist")
                 }
-            // min <sheetName>
-            case "min" =>
-                if (command.length < 2) {
-                    defaultResponse
-                } else {
-                    storage.getMin(command(1)) match {
-                        case Some(value) => Some(s"min = $value")
-                        case None => emptyTableResponse
-                    }
+            case Array("max", sheetName) =>
+                storage.getMax(sheetName) match {
+                    case Some(value) => SomeData(s"max = $value")
+                    case None => EmptySheet()
                 }
-            // max <sheetName>
-            case "max" =>
-                if (command.length < 2) {
-                    defaultResponse
-                } else {
-                    storage.getMax(command(1)) match {
-                        case Some(value) => Some(s"max = $value")
-                        case None => emptyTableResponse
-                    }
+            case Array("average", sheetName) =>
+                storage.getAverage(sheetName) match {
+                    case Some(value) => SomeData(s"min = $value")
+                    case None => EmptySheet()
                 }
-            // average <sheetName>
-            case "average" =>
-                if (command.length < 2) {
-                    defaultResponse
-                } else {
-                    storage.getAverage(command(1)) match {
-                        case Some(value) => Some(s"average = $value")
-                        case None => emptyTableResponse
-                    }
-                }
-            // otherwise
             case _ =>
-                defaultResponse
+                Default()
         }
+    }
 
-        result.foreach { response =>
-            println(response)
-            Controller.readQuery()
+    private val helpMessage: String =
+        """Commands:
+          |  load <sheetName> <currencyName> <dd.MM.yyyy> <dd.MM.yyyy>
+          |  delete <sheetName>
+          |  delete all
+          |  sheets
+          |  help
+          |  exit
+          |  show <sheetName>
+          |  min <sheetName>
+          |  max <sheetName>
+          |  average <sheetName>
+          |""".stripMargin
+
+    def launch(): Unit = {
+        println(helpMessage)
+        while (true) {
+            Controller.readQuery() match {
+                case Exit(_) => return
+                case response => println(response.message)
+            }
         }
     }
 }

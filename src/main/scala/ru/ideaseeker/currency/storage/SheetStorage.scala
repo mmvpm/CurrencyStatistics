@@ -4,6 +4,7 @@ import ru.ideaseeker.currency.download.CbrExcelDownloader
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import scala.util.Try
 import scala.collection.mutable
 
 class SheetStorage {
@@ -16,14 +17,15 @@ class SheetStorage {
     }
     private val downloader: CbrExcelDownloader = new CbrExcelDownloader
 
-    def load(sheetName: String, currencyName: String, fromDate: String, toDate: String): Unit = {
-        val sourceArray = downloader
-            .setCurrency(currencyName)
-            .setFromDate(LocalDate.parse(fromDate, inputDateFormatter))
-            .setToDate(LocalDate.parse(toDate, inputDateFormatter))
-            .get
-
-        storage(sheetName) = new CbrExcelSheet(sourceArray)
+    def load(sheetName: String, currencyName: String, fromDate: String, toDate: String): Try[Unit] = {
+        Try {
+            val sourceArray = downloader
+                .setCurrency(currencyName)
+                .setFromDate(LocalDate.parse(fromDate, inputDateFormatter))
+                .setToDate(LocalDate.parse(toDate, inputDateFormatter))
+                .get
+            storage(sheetName) = new CbrExcelSheet(sourceArray)
+        }
     }
 
     def delete(sheetName: String): Unit = {
@@ -38,11 +40,8 @@ class SheetStorage {
         storage.keys.toList
     }
 
-    def show(sheetName: String): List[Double] = {
-        storage.get(sheetName) match {
-            case Some(sheet) => sheet.getValues
-            case None => List.empty
-        }
+    def show(sheetName: String): Option[List[Double]] = {
+        storage.get(sheetName).flatMap(_.getValues)
     }
 
     def getMin(sheetName: String): Option[Double] = {

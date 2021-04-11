@@ -61,7 +61,12 @@ class CbrExcelSheet(sourceArray: Array[Byte]) {
         (firstDate, lastDate)
     }
 
-    def getValues: List[Double] = values.toList
+    def getValues: Option[List[Double]] = {
+        values.toList match {
+            case Nil  => None
+            case list => Some(list)
+        }
+    }
 
     def getMin: Option[Double] = {
         if (isEmpty) {
