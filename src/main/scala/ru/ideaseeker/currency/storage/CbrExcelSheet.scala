@@ -1,7 +1,7 @@
 package ru.ideaseeker.currency.storage
 
-import scala.util.{Failure, Success, Try}
 import java.io.ByteArrayInputStream
+import scala.util.{Failure, Success, Try}
 import scala.collection.parallel.mutable.ParArray
 import org.apache.poi.xssf.usermodel.{XSSFSheet, XSSFWorkbook}
 
