@@ -31,10 +31,6 @@ class MainTest extends AnyFunSuite {
         assert(sheet.currencyName.contains("US Dollar"))
     }
 
-    test("date range") {
-        assert(sheet.dateRange.contains(("02-мар.-2021", "10-апр.-2021")))
-    }
-
     test("currency nominal") {
         assert((sheet.currencyNominal.get - 1).abs < 1e-4) // compare two doubles
     }
