@@ -40,6 +40,18 @@ class SheetStorage {
         storage.keys.toList
     }
 
+    def getName(sheetName: String): Option[String] = {
+        storage.get(sheetName).flatMap(_.currencyName)
+    }
+
+    def getDate(sheetName: String): Option[(String, String)] = {
+        storage.get(sheetName).flatMap(_.dateRange)
+    }
+
+    def getNominal(sheetName: String): Option[Double] = {
+        storage.get(sheetName).flatMap(_.currencyNominal)
+    }
+
     def show(sheetName: String): Option[List[Double]] = {
         storage.get(sheetName).flatMap(_.getValues)
     }

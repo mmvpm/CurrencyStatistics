@@ -37,6 +37,21 @@ object Controller {
                 SomeData(storage.getSheets.mkString("[", ", ", "]"))
             case Array("exit") =>
                 Exit()
+            case Array("name", sheetName) =>
+                storage.getName(sheetName) match {
+                    case Some(name) => SomeData(s"name = $name")
+                    case None => EmptySheet()
+                }
+            case Array("date", sheetName) =>
+                storage.getDate(sheetName) match {
+                    case Some(range) => SomeData(s"date range = $range")
+                    case None => EmptySheet()
+                }
+            case Array("nominal", sheetName) =>
+                storage.getNominal(sheetName) match {
+                    case Some(nominal) => SomeData(s"nominal = $nominal")
+                    case None => EmptySheet()
+                }
             case Array("show", sheetName) =>
                 storage.show(sheetName) match {
                     case Some(list) => SomeData(list.mkString("[", ", ", "]"))
@@ -45,7 +60,7 @@ object Controller {
             case Array("min", sheetName) =>
                 storage.getMin(sheetName) match {
                     case Some(value) => SomeData(s"min = $value")
-                    case None => Error("Sheet is empty or doesn't exist")
+                    case None => EmptySheet()
                 }
             case Array("max", sheetName) =>
                 storage.getMax(sheetName) match {

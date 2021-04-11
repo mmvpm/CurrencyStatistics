@@ -1,5 +1,6 @@
 package ru.ideaseeker.currency.storage
 
+import scala.util.{Failure, Success, Try}
 import java.io.ByteArrayInputStream
 import scala.collection.parallel.mutable.ParArray
 import org.apache.poi.xssf.usermodel.{XSSFSheet, XSSFWorkbook}
@@ -29,36 +30,32 @@ class CbrExcelSheet(sourceArray: Array[Byte]) {
 
     private val values: ParArray[Double] = ParArray.fromIterables(
         (1 until height).map { i =>
-            getOrDefault(i, index("value")).toDouble
+            getCell(i, index("value")) match {
+                case Failure(error) => throw error
+                case Success(value) => value.toDouble
+            }
         }.reverse.toArray
     )
 
     // get cell from excel sheet
-    private def getOrDefault(i: Int, j: Int, default: String = "-1"): String = {
-        if (i < height && j < sheet.getRow(i).getLastCellNum) {
-            sheet.getRow(i).getCell(j).toString
-        } else {
-            default
-        }
+    private def getCell(i: Int, j: Int): Try[String] = {
+        Try(sheet.getRow(i).getCell(j).toString)
     }
 
 
-    def isEmpty: Boolean = {
-        height < 2
+    def currencyName: Option[String] = {
+        getCell(1, index("name")).toOption
     }
 
-    def currencyNominal: Double = {
-        getOrDefault(1, index("nominal")).toDouble
+    def dateRange: Option[(String, String)] = {
+        (for {
+            firstDate <- getCell(1, index("date"))
+            lastDate <- getCell(height - 1, index("date"))
+        } yield (firstDate, lastDate)).toOption
     }
 
-    def currencyName: String = {
-        getOrDefault(1, index("name"), "empty")
-    }
-
-    def dateRange: (String, String) = {
-        val firstDate = getOrDefault(1, index("date"))
-        val lastDate = getOrDefault(height - 1, index("date"))
-        (firstDate, lastDate)
+    def currencyNominal: Option[Double] = {
+        getCell(1, index("nominal")).map(_.toDouble).toOption
     }
 
     def getValues: Option[List[Double]] = {
@@ -69,23 +66,14 @@ class CbrExcelSheet(sourceArray: Array[Byte]) {
     }
 
     def getMin: Option[Double] = {
-        if (isEmpty) {
-            return None
-        }
-        Some(values.min)
+        Try(values.min).toOption
     }
 
     def getMax: Option[Double] = {
-        if (isEmpty) {
-            return None
-        }
-        Some(values.max)
+        Try(values.max).toOption
     }
 
     def getAverage: Option[Double] = {
-        if (isEmpty) {
-            return None
-        }
-        Some(values.sum / values.length)
+        Try(values.sum / values.length).toOption
     }
 }
