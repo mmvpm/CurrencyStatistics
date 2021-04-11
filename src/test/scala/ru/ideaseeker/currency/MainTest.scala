@@ -1,10 +1,10 @@
 package ru.ideaseeker.currency
 
-import org.scalatest.funsuite.AnyFunSuite
 import ru.ideaseeker.currency.download._
-import ru.ideaseeker.currency.storage.{CbrExcelSheet, SheetStorage}
+import ru.ideaseeker.currency.storage._
 
 import java.time.{LocalDate, Month}
+import org.scalatest.funsuite.AnyFunSuite
 
 class MainTest extends AnyFunSuite {
 
