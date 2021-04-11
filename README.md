@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/IdeaSeeker/CurrencyStatistics/workflows/CI/badge.svg)](https://github.com/IdeaSeeker/CurrencyStatistics/actions)
 
-Консольное приложение, позволяющее собирать простейщую статистику о курсах валют на основании данных [Центрального Банка РФ](https://cbr.ru/)
+Консольное приложение, позволяющее собирать простейшую статистику о курсах валют на основании данных [Центрального Банка РФ](https://cbr.ru/)
 
 ## Запуск
 
