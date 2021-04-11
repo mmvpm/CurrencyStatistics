@@ -43,14 +43,15 @@ class CbrExcelSheet(sourceArray: Array[Byte]) {
     }
 
 
+    // None, if values.isEmpty
     def currencyName: Option[String] = {
         getCell(1, index("name")).toOption
     }
 
     def dateRange: Option[(String, String)] = {
         (for {
-            firstDate <- getCell(1, index("date"))
-            lastDate <- getCell(height - 1, index("date"))
+            firstDate <- getCell(height - 1, index("date"))
+            lastDate <- getCell(1, index("date"))
         } yield (firstDate, lastDate)).toOption
     }
 

@@ -40,31 +40,16 @@ class SheetStorage {
         storage.keys.toList
     }
 
-    def getName(sheetName: String): Option[String] = {
-        storage.get(sheetName).flatMap(_.currencyName)
+    // wrapper for one sheet
+    def access[T](function: CbrExcelSheet => Option[T])(sheetName: String): Option[T] = {
+        storage.get(sheetName).flatMap(function)
     }
 
-    def getDate(sheetName: String): Option[(String, String)] = {
-        storage.get(sheetName).flatMap(_.dateRange)
-    }
-
-    def getNominal(sheetName: String): Option[Double] = {
-        storage.get(sheetName).flatMap(_.currencyNominal)
-    }
-
-    def show(sheetName: String): Option[List[Double]] = {
-        storage.get(sheetName).flatMap(_.getValues)
-    }
-
-    def getMin(sheetName: String): Option[Double] = {
-        storage.get(sheetName).flatMap(_.getMin)
-    }
-
-    def getMax(sheetName: String): Option[Double] = {
-        storage.get(sheetName).flatMap(_.getMax)
-    }
-
-    def getAverage(sheetName: String): Option[Double] = {
-        storage.get(sheetName).flatMap(_.getAverage)
-    }
+    def getName: String => Option[String] = access(_.currencyName)
+    def getDate: String => Option[(String, String)] = access(_.dateRange)
+    def getNominal: String => Option[Double] = access(_.currencyNominal)
+    def show: String => Option[List[Double]] = access(_.getValues)
+    def getMin: String => Option[Double] = access(_.getMin)
+    def getMax: String => Option[Double] = access(_.getMax)
+    def getAverage: String => Option[Double] = access(_.getAverage)
 }

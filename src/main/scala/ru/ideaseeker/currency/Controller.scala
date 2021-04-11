@@ -20,6 +20,13 @@ object Controller {
     case class Exit(message: String = "") extends ControllerResponse
     case class SomeData(message: String) extends ControllerResponse
 
+    def fromOption(option: Option[String]): ControllerResponse = {
+        option match {
+            case Some(value) => SomeData(value)
+            case None => EmptySheet()
+        }
+    }
+
     private def readQuery(): ControllerResponse = {
         readLine.split(' ') match {
             case Array("load", sheetName, currencyName, fromDate, toDate) =>
@@ -38,40 +45,19 @@ object Controller {
             case Array("exit") =>
                 Exit()
             case Array("name", sheetName) =>
-                storage.getName(sheetName) match {
-                    case Some(name) => SomeData(s"name = $name")
-                    case None => EmptySheet()
-                }
+                fromOption(storage.getName(sheetName).map { x => s"name = $x" })
             case Array("date", sheetName) =>
-                storage.getDate(sheetName) match {
-                    case Some(range) => SomeData(s"date range = $range")
-                    case None => EmptySheet()
-                }
+                fromOption(storage.getDate(sheetName).map { x => s"date range = $x" })
             case Array("nominal", sheetName) =>
-                storage.getNominal(sheetName) match {
-                    case Some(nominal) => SomeData(s"nominal = $nominal")
-                    case None => EmptySheet()
-                }
+                fromOption(storage.getNominal(sheetName).map { x => s"nominal = $x"})
             case Array("show", sheetName) =>
-                storage.show(sheetName) match {
-                    case Some(list) => SomeData(list.mkString("[", ", ", "]"))
-                    case None => EmptySheet()
-                }
+                fromOption(storage.show(sheetName).map { x => x.mkString("[", ", ", "]") })
             case Array("min", sheetName) =>
-                storage.getMin(sheetName) match {
-                    case Some(value) => SomeData(s"min = $value")
-                    case None => EmptySheet()
-                }
+                fromOption(storage.getMin(sheetName).map { x => s"min = $x" })
             case Array("max", sheetName) =>
-                storage.getMax(sheetName) match {
-                    case Some(value) => SomeData(s"max = $value")
-                    case None => EmptySheet()
-                }
+                fromOption(storage.getMax(sheetName).map { x => s"max = $x" })
             case Array("average", sheetName) =>
-                storage.getAverage(sheetName) match {
-                    case Some(value) => SomeData(s"min = $value")
-                    case None => EmptySheet()
-                }
+                fromOption(storage.getAverage(sheetName).map { x => s"min = $x" })
             case _ =>
                 Default()
         }
@@ -83,8 +69,10 @@ object Controller {
           |  delete <sheetName>
           |  delete all
           |  sheets
-          |  help
           |  exit
+          |  name <sheetName>
+          |  date <sheetName>
+          |  nominal <sheetName>
           |  show <sheetName>
           |  min <sheetName>
           |  max <sheetName>
