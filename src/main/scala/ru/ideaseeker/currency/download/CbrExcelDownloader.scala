@@ -8,13 +8,10 @@ class CbrExcelDownloader extends FileDownloader {
     private var currencyCode: String = "R01239"
 
     def setCurrency(currencyName: String): CbrExcelDownloader = {
-        val nameToCode = Map(
-            "USD" -> "R01235",
-            "EUR" -> "R01239",
-        )
-
+        // example: USD -> R01235
+        val nameToCode = NameConverter.getMap
         currencyCode = nameToCode(currencyName)
-        this
+        this // for chaining
     }
 
     // default values
@@ -22,17 +19,18 @@ class CbrExcelDownloader extends FileDownloader {
     private var   toDate: String = "01%2F01%2F2021"
 
     private val cbrFormatter: DateTimeFormatter = {
+        // date pattern in an http request to the CBR
         DateTimeFormatter.ofPattern("MM%2'F'dd%2'F'yyyy")
     }
 
     def setFromDate(date: LocalDate): CbrExcelDownloader = {
         fromDate = date.format(cbrFormatter)
-        this
+        this // for chaining
     }
 
     def setToDate(date: LocalDate): CbrExcelDownloader = {
         toDate = date.format(cbrFormatter)
-        this
+        this // for chaining
     }
 
     override def url: String =

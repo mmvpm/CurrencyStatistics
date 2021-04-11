@@ -57,7 +57,7 @@ object Controller {
             case Array("max", sheetName) =>
                 fromOption(storage.getMax(sheetName).map { x => s"max = $x" })
             case Array("average", sheetName) =>
-                fromOption(storage.getAverage(sheetName).map { x => s"min = $x" })
+                fromOption(storage.getAverage(sheetName).map { x => s"average = $x" })
             case _ =>
                 Default()
         }
